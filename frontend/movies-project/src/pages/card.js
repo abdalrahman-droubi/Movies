@@ -3,44 +3,40 @@ import { useState, useEffect } from "react";
 // import { Rating } from "@material-tailwind/react";
 
 function Card() {
-  const [searchTitle, setSearchTitle] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [data, setdata] = useState([]);
+  const [FilterData, setFilterData] = useState();
   useEffect(() => {
     axios.get("http://localhost:3500/data").then((res) => {
       setdata(res.data);
+      setFilterData(res.data);
     });
   }, []);
 
-  function handleSearch(e) {
-    // e.preventDefault();
-    // setSearchTitle(e.target.value);
-    // console.log(e.target.value);
-    // if (searchTitle.length > 0) {
-    //   let dataFilterd = data.filter((ele) => {
-    //     if (ele.title == searchTitle) {
-    //       return ele;
-    //     }
-    //   });
-    //   setSearchTitle(dataFilterd);
-    // }
-  }
+  const filterDataByName = (searchTerm) => {
+    const filteredData = data.filter(item =>
+      item.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+        setFilterData(filteredData);
+ }
 
   return (
     <>
       <h1 className="text-center text-4xl font-bold py-10">Top 100 Movies</h1>
-      <form>
+
         <label>search a movie </label>
-        <input
-          type="text"
-          name="search"
-          value={searchTitle}
-          className="border-sky-500 outline outline-offset-1"
-          onChange={handleSearch}
-        />
-      </form>
+        <input style={{border:"1px solid black"}} name="firstName"
+value={searchTerm}
+ onChange={(e) =>{
+  setSearchTerm(e.target.value);
+   filterDataByName(e.target.value);
+  }
+}
+ /> 
+ 
 
       <div className="grid grid-cols-1 lg:grid-cols-4 py-14 place-items-center gap-x-6 gap-y-6 mx-10">
-        {data.map((ele) => {
+        {FilterData?.map((ele) => {
           return (
             <>
               <div className="max-w-sm rounded overflow-hidden shadow-lg h-full">
